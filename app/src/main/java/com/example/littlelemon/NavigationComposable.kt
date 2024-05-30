@@ -1,6 +1,7 @@
 package com.example.littlelemon
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.Composable
@@ -11,7 +12,16 @@ import androidx.navigation.compose.composable
 @Composable
 fun Navigation(navController: NavHostController, context: Context){
     //If info in sharedprefs, startDes=Home, else startDes=Onboarding
-    NavHost(navController = navController, startDestination = Onboarding.route){
+    var start = Onboarding.route
+    val sharedPrefs = context.getSharedPreferences("PersonalInfo", MODE_PRIVATE)
+    if (sharedPrefs.contains("firstName") &&
+        sharedPrefs.contains("lastName") &&
+        sharedPrefs.contains("email")
+    ){
+        start = Home.route
+    }
+
+    NavHost(navController = navController, startDestination = Home.route){
         composable(Onboarding.route){
             Onboarding(navController, context)
         }
@@ -19,7 +29,7 @@ fun Navigation(navController: NavHostController, context: Context){
             Home(navController)
         }
         composable(Profile.route){
-            Profile(navController)
+            Profile(navController, context)
         }
     }
 }

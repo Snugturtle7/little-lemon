@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
@@ -19,12 +20,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,6 +57,7 @@ fun Onboarding(navController: NavController, context: Context){
 
     fun onClickRegister(){
         if(validInputs()){
+            failedValidation = false
             saveInputs()
             navController.navigate(Home.route)
         } else {
@@ -91,7 +96,7 @@ fun Onboarding(navController: NavController, context: Context){
             Text(
                 text="Registration unsuccessful. Please enter all data.",
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+                fontSize = 20.sp,
             )
         }
         Text(
@@ -104,7 +109,13 @@ fun Onboarding(navController: NavController, context: Context){
         OutlinedTextField(
             value = firstName,
             onValueChange = {firstName=it},
-            modifier = Modifier.padding(horizontal = 10.dp)
+            modifier = Modifier.padding(horizontal = 10.dp),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color(0xFF333333),
+                unfocusedTextColor = Color(0xFF333333),
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White
+            )
         )
         Spacer(modifier = Modifier.padding(vertical = 10.dp))
         Text(
@@ -114,7 +125,16 @@ fun Onboarding(navController: NavController, context: Context){
                 .align(Alignment.Start)
                 .padding(horizontal = 10.dp, vertical = 4.dp)
         )
-        OutlinedTextField(value = lastName, onValueChange = {lastName=it})
+        OutlinedTextField(
+            value = lastName,
+            onValueChange = {lastName=it},
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color(0xFF333333),
+                unfocusedTextColor = Color(0xFF333333),
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White
+            )
+        )
         Spacer(modifier = Modifier.padding(vertical = 10.dp))
         Text(
             text="Email",
@@ -123,7 +143,17 @@ fun Onboarding(navController: NavController, context: Context){
                 .align(Alignment.Start)
                 .padding(horizontal = 10.dp, vertical = 4.dp)
         )
-        OutlinedTextField(value = email, onValueChange = {email=it})
+        OutlinedTextField(
+            value = email,
+            onValueChange = {email=it},
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color(0xFF333333),
+                unfocusedTextColor = Color(0xFF333333),
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White
+            ),
+            keyboardOptions = KeyboardOptions(keyboardType=KeyboardType.Email)
+        )
         Spacer(modifier = Modifier.padding(vertical = 30.dp))
         Button(
             onClick = { onClickRegister() },
