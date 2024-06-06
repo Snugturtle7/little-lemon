@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.littlelemon.ui.theme.LittleLemonTheme
-
+import com.example.littlelemon.ui.theme.littleLemonHeader
 
 
 @Composable
@@ -81,7 +81,8 @@ fun Onboarding(navController: NavController, context: Context){
                 color=Color.White,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
-                modifier= Modifier.padding(vertical = 20.dp)
+                modifier= Modifier.padding(vertical = 20.dp),
+                fontFamily = littleLemonHeader
             )
         }
         Text(

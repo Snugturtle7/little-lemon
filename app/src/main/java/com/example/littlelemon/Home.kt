@@ -1,6 +1,5 @@
 package com.example.littlelemon
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -11,18 +10,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -34,22 +37,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.example.littlelemon.ui.theme.LittleLemonTheme
-
-
-//navController: NavController
+import com.example.littlelemon.ui.theme.littleLemonBody
+import com.example.littlelemon.ui.theme.littleLemonHeader
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun Home(navController: NavController, db: MenuDatabase){
     val menuItems = db.menuItemsDao().getAll().observeAsState()
-    var query by remember{ mutableStateOf("") }
+    var searchPhrase by remember{ mutableStateOf("") }
+    var filterCategory by remember { mutableStateOf(FilterCategory.NONE) }
     val listState = rememberLazyListState()
     Column {
         Row (horizontalArrangement = Arrangement.SpaceBetween,
@@ -77,11 +77,17 @@ fun Home(navController: NavController, db: MenuDatabase){
                 Text(
                     text="Little Lemon",
                     color = Color(0xFFF4CE14),
-                    fontSize = 42.sp
+                    fontSize = 42.sp,
+                    fontFamily = littleLemonHeader
                 )
                 Row () {
                     Column(modifier = Modifier.weight(1F)) {
-                        Text(text="Chicago", color = Color.White, fontSize = 26.sp)
+                        Text(
+                            text="Chicago",
+                            color = Color.White,
+                            fontSize = 26.sp,
+                            fontFamily = littleLemonHeader
+                        )
                         Spacer(Modifier.padding(10.dp))
                         Text(
                             text="We are a family-owned Mediterranean restaurant, focused on traditional recipes served with a modern twist",
@@ -100,42 +106,91 @@ fun Home(navController: NavController, db: MenuDatabase){
                     )
                 }
                 Spacer(modifier = Modifier.padding(10.dp))
-                TextField(
-                    value = query,
-                    onValueChange = {query=it},
+                OutlinedTextField(
+                    value = searchPhrase,
+                    onValueChange = {searchPhrase=it},
                     placeholder = {Text(text="Enter search phrase")},
-                    modifier = Modifier.fillMaxWidth())
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.colors(
+                        focusedTextColor = Color(0xFF333333),
+                        unfocusedTextColor = Color(0xFF333333),
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
+                    ),
+                    leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = "Search")}
+                )
             }
         }
-        Text(text="ORDER FOR DELIVERY!", fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(15.dp))
-        Row (horizontalArrangement = Arrangement.SpaceBetween) {
-            Button(onClick = { /*TODO*/ }) {
+        Text(
+            text="ORDER FOR DELIVERY!",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(15.dp),
+            fontFamily = littleLemonBody
+        )
+        Row (horizontalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxWidth()) {
+            Button(
+                onClick = { filterCategory = setFilterCategory(FilterCategory.STARTERS, filterCategory) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFACE14),
+                    contentColor = Color(0xFF333333)
+                )
+            ) {
                 Text(text="Starters", fontSize = 12.sp)
             }
-            Button(onClick = { /*TODO*/ }) {
+            Button(
+                onClick = { filterCategory = setFilterCategory(FilterCategory.MAINS, filterCategory) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFACE14),
+                    contentColor = Color(0xFF333333)
+                )
+            ) {
                 Text(text="Mains", fontSize = 10.sp)
             }
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = { filterCategory = setFilterCategory(FilterCategory.DESSERTS, filterCategory) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFACE14),
+                    contentColor = Color(0xFF333333)
+                )
+            ) {
                 Text(text="Desserts", fontSize = 10.sp)
             }
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = { filterCategory = setFilterCategory(FilterCategory.DRINKS, filterCategory) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFACE14),
+                    contentColor = Color(0xFF333333)
+                )
+            ) {
                 Text(text="Drinks", fontSize = 10.sp)
             }
         }
-        //menuItems.value?.let { MenuItems(items = it) }
-        //menuItems.value?.forEach { UIMenuItem(item = it) }
-        //Log.d("HOME TESTING", menuItems.value.toString())
-        //GlideImage(model = menuItems.value?.get(0)?.image, contentDescription = "Image")
-        //menuItems.value?.forEach { Log.d("Home TESTING", it.toString()) }
-        //UIMenuItem(item = menuItems.value!![0]!!)
-        menuItems.value?.let { MenuItems(it, listState) }
+
+        var filtered: List<MenuItem>? = null
+        if (filterCategory != FilterCategory.NONE){
+            filtered = menuItems.value?.filter { it.category.equals(filterCategory.name, ignoreCase = true)}
+        }
+        if (searchPhrase != "" && filtered == null){
+            filtered = menuItems.value?.filter { it.title.contains(searchPhrase, ignoreCase = true) }
+            filtered?.let { MenuItems(it, listState) }
+        } else if (searchPhrase != ""){
+            filtered = filtered?.filter { it.title.contains(searchPhrase, ignoreCase = true) }
+            filtered?.let { MenuItems(it, listState) }
+        } else if (filtered != null){
+            filtered?.let { MenuItems(it, listState) }
+        }
+        else {
+            menuItems.value?.let { MenuItems(it, listState) }
+        }
+
+
+
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun MenuItems(items: List<MenuItem>, listState: LazyListState){
-    LazyColumn (state=listState){
+    LazyColumn (state=listState, modifier = Modifier.padding(horizontal = 10.dp)){
         items(items) {item ->
             UIMenuItem(item = item)
         }
@@ -148,15 +203,20 @@ private fun MenuItems(items: List<MenuItem>, listState: LazyListState){
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun UIMenuItem(item: MenuItem){
-    Row {
+    Row (modifier = Modifier.padding(vertical = 8.dp)){
         Column(modifier = Modifier.weight(1F)) {
-            Text(text=item.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Text(text=item.description, fontSize = 12.sp)
-            Text(text=item.price, fontSize = 16.sp)
+            Text(text=item.title, fontWeight = FontWeight.Bold, fontSize = 16.sp, fontFamily = littleLemonBody, modifier = Modifier.padding(vertical = 8.dp))
+            Text(text=item.description, fontSize = 12.sp, fontFamily = littleLemonBody)
+            Text(text="$"+item.price+".00", fontSize = 16.sp, fontFamily = littleLemonBody)
         }
         GlideImage(model = item.image, contentDescription = null, modifier = Modifier.requiredSize(100.dp))
     }
     
+}
+
+private fun setFilterCategory(setTo: FilterCategory, current: FilterCategory): FilterCategory{
+    return if (setTo == current) FilterCategory.NONE
+    else setTo
 }
 
 //@Preview(showBackground = true)

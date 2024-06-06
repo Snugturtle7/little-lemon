@@ -11,7 +11,6 @@ import androidx.navigation.compose.composable
 
 @Composable
 fun Navigation(navController: NavHostController, context: Context, db: MenuDatabase){
-    //If info in sharedprefs, startDes=Home, else startDes=Onboarding
     var start = Onboarding.route
     val sharedPrefs = context.getSharedPreferences("PersonalInfo", MODE_PRIVATE)
     if (sharedPrefs.contains("firstName") &&
@@ -21,7 +20,7 @@ fun Navigation(navController: NavHostController, context: Context, db: MenuDatab
         start = Home.route
     }
 
-    NavHost(navController = navController, startDestination = Home.route){
+    NavHost(navController = navController, startDestination = start){
         composable(Onboarding.route){
             Onboarding(navController, context)
         }
