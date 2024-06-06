@@ -25,14 +25,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.littlelemon.ui.theme.LittleLemonTheme
 
-//navController: NavController (param)
-//context: Context (param)
+
 @Composable
 fun Profile(navController: NavController, context: Context){
     val sharedPrefs = context.getSharedPreferences("PersonalInfo", MODE_PRIVATE)
-    val firstName = sharedPrefs.getString("firstName", "error")
-    val lastName = sharedPrefs.getString("lastName", "error")
-    val email = sharedPrefs.getString("email", "error")
+    val firstName = sharedPrefs.getString("firstName", "")
+    val lastName = sharedPrefs.getString("lastName", "")
+    val email = sharedPrefs.getString("email", "")
 
     fun onClickLogOut(){
         sharedPrefs.edit().clear().apply()
